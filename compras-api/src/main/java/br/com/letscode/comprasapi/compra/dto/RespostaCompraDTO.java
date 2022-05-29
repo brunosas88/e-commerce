@@ -1,6 +1,7 @@
 package br.com.letscode.comprasapi.compra.dto;
 
 import br.com.letscode.comprasapi.compra.model.Compra;
+import br.com.letscode.comprasapi.compra.model.EnderecoEnvio;
 import br.com.letscode.comprasapi.pedido.model.Pedido;
 import lombok.*;
 
@@ -14,22 +15,23 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class RespostaCompraDTO {
-    private String cpfCliente;
-    private String dataCompra;
+
     private String idCompra;
-    private String status;
+    private String dataCompra;
     private Float valorTotal;
+    private String status;
+    private EnderecoEnvio enderecoEnvio;
     private List<Pedido> pedidos = new ArrayList<>();
 
-    public static RespostaCompraDTO convertCompraToRespostaCompra(Compra compra) {
-        RespostaCompraDTO respostaCompraDTO = new RespostaCompraDTO();
+    public static RespostaCompraDTO convertToDTO(Compra compra) {
+        RespostaCompraDTO dto = new RespostaCompraDTO();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        respostaCompraDTO.setStatus(compra.getStatus());
-        respostaCompraDTO.setIdCompra(compra.getIdCompra());
-        respostaCompraDTO.setDataCompra(compra.getDataCompra().format(formato));
-        respostaCompraDTO.setCpfCliente(compra.getCpfCliente());
-        respostaCompraDTO.setValorTotal(compra.getValorTotal());
-        respostaCompraDTO.setPedidos(compra.getPedidos());
-        return respostaCompraDTO;
+        dto.setStatus(compra.getStatus());
+        dto.setIdCompra(compra.getIdCompra());
+        dto.setDataCompra(compra.getDataCompra().format(formato));
+        dto.setEnderecoEnvio(compra.getEnderecoEnvio());
+        dto.setValorTotal(compra.getValorTotal());
+        dto.setPedidos(compra.getPedidos());
+        return dto;
     }
 }

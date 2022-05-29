@@ -35,11 +35,11 @@ public class CompraService {
     }
 
     public Flux<RespostaCompraDTO> listaCompras () {
-        return compraRepository.findAll().map(RespostaCompraDTO::convertCompraToRespostaCompra);
+        return compraRepository.findAll().map(RespostaCompraDTO::convertToDTO);
     }
 
     public Flux<RespostaCompraDTO> listaComprasCpf (String cpf) {
-        return compraRepository.findCompraByCpfCliente(cpf).map(RespostaCompraDTO::convertCompraToRespostaCompra);
+        return compraRepository.findCompraByCpfCliente(cpf).map(RespostaCompraDTO::convertToDTO);
     }
 
     public void finalizarCompra(Compra compra) {

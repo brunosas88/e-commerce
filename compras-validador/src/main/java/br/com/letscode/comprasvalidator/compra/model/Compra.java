@@ -20,6 +20,7 @@ public class Compra{
     private LocalDateTime dataCompra;
     private String status;
     private String cpfCliente;
+    private EnderecoEnvio enderecoEnvio;
     private Float valorTotal;
     private List<Pedido> pedidos = new ArrayList<>();
 }

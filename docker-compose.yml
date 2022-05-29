@@ -49,7 +49,7 @@ services:
       - loja-net
     depends_on:
       - mongo-banco
-      - compras-validator
+      - compras-validador
       - kafka
     environment:
       - SPRING_DATA_MONGODB_HOST=mongo-banco
@@ -61,9 +61,9 @@ services:
       - mongo-banco
       - kafka:kafka
 
-  compras-validator:
+  compras-validador:
     build: ./compras-validador
-    image: compras-validator:latest
+    image: compras-validador:latest
     ports:
       - "8082:8082"
     networks:
@@ -71,16 +71,17 @@ services:
     depends_on:
       - produto-api
       - kafka
+      - usuario-api
     environment:
       - KAFKA_ADDRESS=kafka:9092
-      - WEBCLIENT_URL=http://produto-api:8081
+      - WEBCLIENT_URL_PRODUTO=http://produto-api:8081
+      - WEBCLIENT_URL_USUARIO=http://usuario-api:8083
     links:
       - produto-api:produto-api
       - kafka:kafka
+      - usuario-api:usuario-api
 
   zookeeper:
-#    container_name: zookeeper
-    restart: always
     image: confluentinc/cp-zookeeper:latest
     ports:
       - "22181:2181"
@@ -91,10 +92,8 @@ services:
       -  ZOOKEEPER_TICK_TIME=2000
 
   kafka:
-#    container_name: kafka
     hostname: kafka
     image: confluentinc/cp-kafka:latest
-    restart: always
     ports:
       - "9092:9092"
     environment:
@@ -138,9 +137,39 @@ services:
     image: mongo:4
     networks:
       - loja-net
-    restart: always
     ports:
       - "27017:27017"
 
+  prometheus:
+    image: prom/prometheus:v2.35.0
+    depends_on:
+      - produto-api
+      - usuario-api
+      - compras-validador
+      - compras-api
+    networks:
+      - loja-net
+    ports:
+      - "9090:9090"
+    restart: always
+    volumes:
+      - ./config:/etc/prometheus
+      - prometheus-data:/prometheus
+    command: --config.file=/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    networks:
+      - loja-net
+
 networks:
   loja-net:
+
+volumes:
+  prometheus-data:

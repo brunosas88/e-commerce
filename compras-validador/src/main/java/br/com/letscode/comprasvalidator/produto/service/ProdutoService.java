@@ -20,11 +20,11 @@ public class ProdutoService {
 
     private final ProducerService producerService;
     public static Map<String, RespostaProdutoDTO> produtos = new HashMap<>();
-    @Value("${webclient.url}")
-    private String WEBCLIENT_URL;
+    @Value("${webclient.url.produto}")
+    private String WEBCLIENT_URL_PRODUTO;
 
-    public RespostaProdutoDTO buscarProduto (String codigo) {
-        WebClient webClient = WebClient.create(WEBCLIENT_URL);
+    public RespostaProdutoDTO buscarProduto(String codigo) {
+        WebClient webClient = WebClient.create(WEBCLIENT_URL_PRODUTO);
         return webClient
                 .get()
                 .uri("/produtos/busca/{codigo}", codigo)
@@ -33,15 +33,15 @@ public class ProdutoService {
                 .block();
     }
 
-    public void updateProduto (RespostaProdutoDTO respostaProdutoDTO) {
-        WebClient webClient = WebClient.create(WEBCLIENT_URL);
+    public void updateProduto(RespostaProdutoDTO respostaProdutoDTO) {
+        WebClient webClient = WebClient.create(WEBCLIENT_URL_PRODUTO);
         webClient
                 .patch()
                 .uri("/produtos/update")
                 .bodyValue(respostaProdutoDTO).retrieve().bodyToMono(RespostaProdutoDTO.class).block();
     }
 
-    public boolean controleProduto (ValidacaoCompraDTO validacaoCompraDTO) {
+    public boolean controleProduto(ValidacaoCompraDTO validacaoCompraDTO) {
         List<Boolean> status = new ArrayList<>();
         validacaoCompraDTO.getRequisicaoCompraDTO().getPedido().forEach( pedido -> {
             RespostaProdutoDTO produto = buscarProduto(pedido.getCodigoProduto());
