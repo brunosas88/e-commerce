@@ -3,7 +3,7 @@ version: "3"
 services:
 
   usuario-api:
-    build: ./usuario-api
+#    build: ./usuario-api
     image: usuario-api:latest
     ports:
       - "8083:8083"
@@ -18,9 +18,10 @@ services:
       - SPRING_DATA_MONGODB_PORT=27017
       - SPRING_DATASOURCE_PASSWORD=root
       - SERVER_PORT=8083
+      - EUREKA_SERVER_URL=http://eureka-servidor-ecommerce:8761/eureka
 
   produto-api:
-    build: ./produto-api
+#    build: ./produto-api
     image: produto-api:latest
     ports:
       - "8081:8081"
@@ -36,12 +37,13 @@ services:
       - POSTGRES_DB=produtos
       - SPRING_REDIS_HOST=redis-compose
       - SPRING_REDIS_PORT=6379
+      - EUREKA_SERVER_URL=http://eureka-servidor-ecommerce:8761/eureka
     links:
       - postgres-compose
       - redis-compose
 
   compras-api:
-    build: ./compras-api
+#    build: ./compras-api
     image: compras-api:latest
     ports:
       - "8080:8080"
@@ -57,12 +59,13 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root
       - SERVER_PORT=8080
       - KAFKA_ADDRESS=kafka:9092
+      - EUREKA_SERVER_URL=http://eureka-servidor-ecommerce:8761/eureka
     links:
       - mongo-banco
       - kafka:kafka
 
   compras-validador:
-    build: ./compras-validador
+#    build: ./compras-validador
     image: compras-validador:latest
     ports:
       - "8082:8082"
@@ -76,10 +79,24 @@ services:
       - KAFKA_ADDRESS=kafka:9092
       - WEBCLIENT_URL_PRODUTO=http://produto-api:8081
       - WEBCLIENT_URL_USUARIO=http://usuario-api:8083
+      - EUREKA_SERVER_URL=http://eureka-servidor-ecommerce:8761/eureka
     links:
       - produto-api:produto-api
       - kafka:kafka
       - usuario-api:usuario-api
+
+  eureka-servidor-ecommerce:
+#    build: ./eureka-servidor-ecommerce
+    image: eureka-servidor-ecommerce:latest
+    ports:
+      - "8761:8761"
+    networks:
+      - loja-net
+    depends_on:
+      - produto-api
+      - usuario-api
+      - compras-validador
+      - compras-api
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
