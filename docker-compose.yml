@@ -3,7 +3,7 @@ version: "3"
 services:
 
   usuario-api:
-#    build: ./usuario-api
+    build: ./usuario-api
     image: usuario-api:latest
     ports:
       - "8083:8083"
@@ -21,7 +21,7 @@ services:
       - EUREKA_SERVER_URL=http://eureka-servidor-ecommerce:8761/eureka
 
   produto-api:
-#    build: ./produto-api
+    build: ./produto-api
     image: produto-api:latest
     ports:
       - "8081:8081"
@@ -43,7 +43,7 @@ services:
       - redis-compose
 
   compras-api:
-#    build: ./compras-api
+    build: ./compras-api
     image: compras-api:latest
     ports:
       - "8080:8080"
@@ -65,7 +65,7 @@ services:
       - kafka:kafka
 
   compras-validador:
-#    build: ./compras-validador
+    build: ./compras-validador
     image: compras-validador:latest
     ports:
       - "8082:8082"
@@ -86,7 +86,7 @@ services:
       - usuario-api:usuario-api
 
   eureka-servidor-ecommerce:
-#    build: ./eureka-servidor-ecommerce
+    build: ./eureka-servidor-ecommerce
     image: eureka-servidor-ecommerce:latest
     ports:
       - "8761:8761"
