@@ -1,9 +1,9 @@
 package br.com.letscode.comprasvalidator.usuario.service;
 
-import br.com.letscode.comprasvalidator.produto.dto.RespostaProdutoDTO;
 import br.com.letscode.comprasvalidator.usuario.dto.RespostaUsuarioDTO;
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.EurekaClient;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -11,11 +11,19 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Service
 public class UsuarioService {
 
-    @Value("${webclient.url.usuario}")
-    private String WEBCLIENT_URL_USUARIO;
+    private final EurekaClient eurekaClient;
 
     public RespostaUsuarioDTO buscarUsuario(String cpf) {
-        WebClient webClient = WebClient.create(WEBCLIENT_URL_USUARIO);
+        InstanceInfo instance = eurekaClient
+                .getApplication("usuario-api")
+                .getInstances()
+                .get(0);
+
+        String hostName = instance.getHostName();
+        int port = instance.getPort();
+        String url = "http://" + hostName + ":" + port;
+
+        WebClient webClient = WebClient.create(url);
         return webClient
                 .get()
                 .uri("/usuario/busca/{cpf}", cpf)

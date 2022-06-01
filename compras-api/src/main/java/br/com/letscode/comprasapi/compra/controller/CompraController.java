@@ -31,4 +31,9 @@ public class CompraController {
     public ResponseEntity<Flux<RespostaCompraDTO>> listarComprasCpf (@PathVariable String cpf) {
         return ResponseEntity.ok(compraService.listaComprasCpf(cpf));
     }
+
+    @DeleteMapping("/delete")
+    public void deletarBanco() {
+        compraService.deletarBanco();
+    }
 }

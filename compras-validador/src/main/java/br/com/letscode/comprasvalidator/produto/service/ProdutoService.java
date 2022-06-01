@@ -3,13 +3,12 @@ package br.com.letscode.comprasvalidator.produto.service;
 
 import br.com.letscode.comprasvalidator.compra.dto.ValidacaoCompraDTO;
 import br.com.letscode.comprasvalidator.compra.model.Compra;
+import br.com.letscode.comprasvalidator.gateway.IProdutoController;
 import br.com.letscode.comprasvalidator.producer.service.ProducerService;
 import br.com.letscode.comprasvalidator.produto.dto.RespostaProdutoDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.*;
 
@@ -18,27 +17,18 @@ import java.util.*;
 @Service
 public class ProdutoService {
 
+    private final IProdutoController iProdutoController;
+
     private final ProducerService producerService;
+
     public static Map<String, RespostaProdutoDTO> produtos = new HashMap<>();
-    @Value("${webclient.url.produto}")
-    private String WEBCLIENT_URL_PRODUTO;
 
     public RespostaProdutoDTO buscarProduto(String codigo) {
-        WebClient webClient = WebClient.create(WEBCLIENT_URL_PRODUTO);
-        return webClient
-                .get()
-                .uri("/produtos/busca/{codigo}", codigo)
-                .retrieve()
-                .bodyToMono(RespostaProdutoDTO.class)
-                .block();
+        return iProdutoController.buscarProduto(codigo);
     }
 
     public void updateProduto(RespostaProdutoDTO respostaProdutoDTO) {
-        WebClient webClient = WebClient.create(WEBCLIENT_URL_PRODUTO);
-        webClient
-                .patch()
-                .uri("/produtos/update")
-                .bodyValue(respostaProdutoDTO).retrieve().bodyToMono(RespostaProdutoDTO.class).block();
+        iProdutoController.updateProduto(respostaProdutoDTO);
     }
 
     public boolean controleProduto(ValidacaoCompraDTO validacaoCompraDTO) {
@@ -50,13 +40,13 @@ public class ProdutoService {
             if(Objects.equals(produto.getCodigo(), "null")) {
                 Compra compraCancelada = validacaoCompraDTO.getCompra();
                 compraCancelada.setValorTotal(0F);
-                compraCancelada.setStatus("CANCELADA: Produto " + pedido.getCodigoProduto() + " inexistente");
+                compraCancelada.setStatus("CANCELADA: Produto de codigo [" + pedido.getCodigoProduto() + "] inexistente");
                 producerService.enviarMensagem(compraCancelada);
                 status.add(false);
             }else if(quantidadeFinalEstoque < 0 ) {
                 Compra compraCancelada = validacaoCompraDTO.getCompra();
                 compraCancelada.setValorTotal(0F);
-                compraCancelada.setStatus("CANCELADA: Estoque do produto " + pedido.getCodigoProduto() + " insuficiente");
+                compraCancelada.setStatus("CANCELADA: Estoque do produto de codigo [" + pedido.getCodigoProduto() + "] insuficiente");
                 producerService.enviarMensagem(compraCancelada);
                 status.add(false);
             }else {

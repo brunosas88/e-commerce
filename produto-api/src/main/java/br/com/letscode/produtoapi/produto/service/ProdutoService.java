@@ -10,7 +10,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -29,7 +33,7 @@ public class ProdutoService {
         return RespostaProdutoDTO.convertToDTO(produtoRepository.save(novoProduto));
     }
 
-    public Page<RespostaProdutoDTO> listarProdutos(Predicate predicate, Pageable pageable){
+    public Page<RespostaProdutoDTO> listarProdutos(Predicate predicate, Pageable pageable) {
         return produtoRepository.findAll(predicate, pageable).map(RespostaProdutoDTO::convertToDTO);
     }
 

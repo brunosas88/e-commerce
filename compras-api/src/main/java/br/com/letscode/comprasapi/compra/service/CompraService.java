@@ -45,4 +45,8 @@ public class CompraService {
     public void finalizarCompra(Compra compra) {
         compraRepository.save(compra).subscribe();
     }
+
+    public void deletarBanco() {
+        compraRepository.deleteAll().subscribe();
+    }
 }

@@ -77,8 +77,6 @@ services:
       - usuario-api
     environment:
       - KAFKA_ADDRESS=kafka:9092
-      - WEBCLIENT_URL_PRODUTO=http://produto-api:8081
-      - WEBCLIENT_URL_USUARIO=http://usuario-api:8083
       - EUREKA_SERVER_URL=http://eureka-servidor-ecommerce:8761/eureka
     links:
       - produto-api:produto-api
@@ -168,7 +166,6 @@ services:
       - loja-net
     ports:
       - "9090:9090"
-    restart: always
     volumes:
       - ./config:/etc/prometheus
       - prometheus-data:/prometheus

@@ -1,6 +1,6 @@
 package br.com.letscode.produtoapi.produto.controller;
 
-
+import br.com.letscode.produtoapi.gateway.IProdutoController;
 import br.com.letscode.produtoapi.produto.dto.RequisicaoProdutoDTO;
 import br.com.letscode.produtoapi.produto.dto.RespostaProdutoDTO;
 import br.com.letscode.produtoapi.produto.model.Produto;
@@ -11,33 +11,33 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/produtos")
 @RequiredArgsConstructor
-public class ProdutoController {
+public class ProdutoController implements IProdutoController {
 
     private final ProdutoService produtoService;
 
-    @PostMapping
-    public ResponseEntity<RespostaProdutoDTO> cadastrarProduto(@RequestBody RequisicaoProdutoDTO requisicaoProdutoDTO) {
-        return ResponseEntity.ok(produtoService.cadastrarProduto(requisicaoProdutoDTO));
+    @Override
+    public RespostaProdutoDTO cadastrarProduto(RequisicaoProdutoDTO requisicaoProdutoDTO) {
+        return produtoService.cadastrarProduto(requisicaoProdutoDTO);
     }
 
-    @GetMapping
-    public ResponseEntity<Page<RespostaProdutoDTO>> listarProdutos(@QuerydslPredicate(root = Produto.class) Predicate predicate, Pageable pageable) {
-        return ResponseEntity.ok(produtoService.listarProdutos(predicate, pageable));
+    @Override
+    public RespostaProdutoDTO buscarProduto(String codigo) {
+        return produtoService.buscarProdutoPorCodigo(codigo);
     }
 
-    @GetMapping("/busca/{codigo}")
-    public ResponseEntity<RespostaProdutoDTO> buscarProduto(@PathVariable String codigo) {
-        return ResponseEntity.ok(produtoService.buscarProdutoPorCodigo(codigo));
-    }
-
-    @PatchMapping("/update")
-    public void updateProduto(@RequestBody RespostaProdutoDTO respostaProdutoDTO) {
+    @Override
+    public void updateProduto(RespostaProdutoDTO respostaProdutoDTO) {
         produtoService.updateProduto(respostaProdutoDTO);
     }
+
+    @GetMapping("/produtos")
+    public Page<RespostaProdutoDTO> listarProdutos(@QuerydslPredicate(root = Produto.class)  Predicate predicate, Pageable pageable) {
+        return produtoService.listarProdutos(predicate, pageable);
+    }
+
+
 }
