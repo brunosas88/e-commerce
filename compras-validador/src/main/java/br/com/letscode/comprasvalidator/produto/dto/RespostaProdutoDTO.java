@@ -7,6 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
 public class RespostaProdutoDTO {
     private String codigo;
     private String nome;

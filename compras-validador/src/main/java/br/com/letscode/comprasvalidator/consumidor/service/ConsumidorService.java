@@ -4,10 +4,10 @@ import br.com.letscode.comprasvalidator.compra.dto.ValidacaoCompraDTO;
 import br.com.letscode.comprasvalidator.compra.service.CompraService;
 import br.com.letscode.comprasvalidator.metricas.Metricas;
 import br.com.letscode.comprasvalidator.produto.service.ProdutoService;
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.MeterRegistry;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,6 +18,7 @@ public class ConsumidorService {
     private final ProdutoService produtoService;
     private final Metricas metricas;
 
+    @CircuitBreaker(name="kafka-consumidor-error")
     @KafkaListener(topics = "COMPRA_PROCESSADA", groupId = "grupo-1")
     public void receberMensagem(ValidacaoCompraDTO validacaoCompraDTO) {
         metricas.incrementarContadorCP();
