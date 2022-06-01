@@ -3,8 +3,8 @@ version: "3"
 services:
 
   usuario-api:
-    build: ./usuario-api
-    image: usuario-api:latest
+#    build: ./usuario-api
+    image: brunosas/usuario-api:latest
     ports:
       - "8083:8083"
     depends_on:
@@ -19,8 +19,8 @@ services:
       - EUREKA_SERVER_URL=http://eureka-servidor-ecommerce:8761/eureka
 
   produto-api:
-    build: ./produto-api
-    image: produto-api:latest
+#    build: ./produto-api
+    image: brunosas/produto-api:latest
     ports:
       - "8081:8081"
     networks:
@@ -38,8 +38,8 @@ services:
       - EUREKA_SERVER_URL=http://eureka-servidor-ecommerce:8761/eureka
 
   compras-api:
-    build: ./compras-api
-    image: compras-api:latest
+#    build: ./compras-api
+    image: brunosas/compras-api:latest
     ports:
       - "8080:8080"
     networks:
@@ -57,8 +57,8 @@ services:
       - EUREKA_SERVER_URL=http://eureka-servidor-ecommerce:8761/eureka
 
   compras-validador:
-    build: ./compras-validador
-    image: compras-validador:latest
+#    build: ./compras-validador
+    image: brunosas/compras-validador:latest
     ports:
       - "8082:8082"
     networks:
@@ -72,8 +72,8 @@ services:
       - EUREKA_SERVER_URL=http://eureka-servidor-ecommerce:8761/eureka
 
   eureka-servidor-ecommerce:
-    build: ./eureka-servidor-ecommerce
-    image: eureka-servidor-ecommerce:latest
+#    build: ./eureka-servidor-ecommerce
+    image: brunosas/eureka-servidor-ecommerce:latest
     ports:
       - "8761:8761"
     networks:
